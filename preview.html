@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClinicOS – Full Stack Preview</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0f172a;--blue:#2563eb;--dk:#1d4ed8;--green:#16a34a;--red:#dc2626;--amber:#d97706;--purple:#7c3aed;--bg:#f1f5f9;--sur:#fff;--bdr:#e2e8f0;--txt:#0f172a;--muted:#64748b}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;min-height:100vh}
+/* Header */
+.hdr{background:linear-gradient(135deg,#0f172a,#1e3a5f 55%,#0f4c81);padding:2rem 2rem 1.5rem;text-align:center;color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+.hdr-icon{font-size:2.5rem;margin-bottom:.4rem}
+.hdr h1{font-size:2rem;font-weight:900;letter-spacing:-1px;margin-bottom:.25rem}
+.hdr h1 span{color:#60a5fa}
+.hdr p{color:#94a3b8;font-size:.9rem}
+.badges{display:flex;justify-content:center;gap:.5rem;margin-top:.875rem;flex-wrap:wrap}
+.badge{padding:.25rem .7rem;border-radius:999px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.b-java{background:#fef3c7;color:#d97706}.b-spring{background:#dcfce7;color:#15803d}
+.b-ng{background:#fee2e2;color:#dc2626}.b-mysql{background:#dbeafe;color:#1d4ed8}
+.b-jwt{background:#f3e8ff;color:#7c3aed}
+/* Tabs */
+.tabs{display:flex;background:#1e293b;overflow-x:auto;border-bottom:1px solid #334155;padding:0 1rem}
+.tab{padding:.875rem 1.2rem;background:none;border:none;color:#94a3b8;font-size:.825rem;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .15s}
+.tab:hover{color:#fff;background:rgba(255,255,255,.05)}
+.tab.active{color:#60a5fa;border-bottom-color:#3b82f6}
+/* Panes */
+.pane{display:none}.pane.active{display:block}
+/* Shell */
+.shell{display:flex;height:570px;background:var(--bg);overflow:hidden}
+.sb{width:215px;background:var(--navy);color:#fff;display:flex;flex-direction:column;flex-shrink:0;padding:1.25rem 0}
+.sb-brand{padding:0 1.25rem 1.25rem;font-size:1.2rem;font-weight:800;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.5rem}
+.sb nav{flex:1;padding:.75rem 0;overflow-y:auto}
+.sb-item{display:flex;align-items:center;gap:.6rem;padding:.6rem 1.25rem;color:#94a3b8;font-size:.83rem;font-weight:500;cursor:pointer;border-left:3px solid transparent;transition:all .15s}
+.sb-item:hover,.sb-item.active{color:#fff;background:rgba(255,255,255,.09);border-left-color:#3b82f6}
+.sb-foot{padding:.75rem 1rem 0;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.6rem}
+.ava{width:30px;height:30px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0}
+.u-name{font-size:.78rem;font-weight:600;color:#fff}.u-role{font-size:.65rem;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+/* Main */
+.main{flex:1;overflow-y:auto;padding:1.5rem 1.75rem;background:var(--bg)}
+/* Cards */
+.card{background:var(--sur);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.07);padding:1.25rem 1.5rem;border:1px solid var(--bdr);margin-bottom:1rem}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem}
+.card-hd h3{font-size:.95rem;font-weight:700;color:var(--txt)}
+/* Stats */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem}
+.stat{background:var(--sur);border-radius:12px;padding:1rem 1.1rem;box-shadow:0 4px 16px rgba(0,0,0,.07);border:1px solid var(--bdr);display:flex;align-items:center;gap:.75rem}
+.si{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
+.si.bl{background:#dbeafe}.si.gr{background:#dcfce7}.si.am{background:#fef3c7}.si.pu{background:#f3e8ff}
+.sv{font-size:1.5rem;font-weight:800;line-height:1}.sl{font-size:.7rem;color:var(--muted);margin-top:1px}
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:.81rem}
+th{background:#f8fafc;padding:.55rem .875rem;text-align:left;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:2px solid var(--bdr)}
+td{padding:.7rem .875rem;border-bottom:1px solid #f1f5f9;color:var(--txt)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8fafc}
+/* Pill badges */
+.pill{display:inline-flex;align-items:center;padding:.18rem .5rem;border-radius:999px;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.p-blue{background:#dbeafe;color:#1d4ed8}.p-green{background:#dcfce7;color:#15803d}
+.p-amber{background:#fef3c7;color:#b45309}.p-red{background:#fee2e2;color:#b91c1c}
+.p-gray{background:#f1f5f9;color:#475569}.p-purple{background:#f3e8ff;color:#7c3aed}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.3rem;padding:.45rem .875rem;border:none;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-blue{background:#2563eb;color:#fff}.btn-blue:hover{background:#1d4ed8}
+.btn-green{background:#16a34a;color:#fff}.btn-green:hover{opacity:.9}
+.btn-red{background:#dc2626;color:#fff}.btn-red:hover{opacity:.9}
+.btn-ghost{background:transparent;border:1.5px solid var(--bdr);color:var(--txt)}.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:.28rem .6rem;font-size:.73rem}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+/* Page header */
+.ph{margin-bottom:1.1rem}.ph h2{font-size:1.25rem;font-weight:800}.ph p{font-size:.78rem;color:var(--muted);margin-top:1px}
+/* Slots */
+.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:.4rem;margin-top:.5rem}
+.slot{padding:.4rem .2rem;border-radius:7px;border:2px solid var(--bdr);background:#fff;font-size:.73rem;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.slot.free:hover,.slot.sel{background:#2563eb;color:#fff;border-color:#2563eb}
+.slot.taken{background:#fee2e2;color:#b91c1c;border-color:#fecaca;cursor:not-allowed}
+/* Rx card */
+.rx{border:1px solid var(--bdr);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:.65rem;background:#fafafa}
+.rx-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.4rem}
+.rx-disease{font-weight:800;font-size:.9rem;color:var(--navy)}
+.rx-meta{font-size:.72rem;color:var(--muted);margin-bottom:.3rem}
+.rx-meds{font-size:.8rem;color:#334155}
+/* Form */
+.fg{margin-bottom:.875rem}
+.fg label{display:block;font-size:.75rem;font-weight:700;color:#374151;margin-bottom:.25rem}
+.fg input,.fg select,.fg textarea{width:100%;padding:.55rem .8rem;border:2px solid var(--bdr);border-radius:8px;font-size:.83rem;outline:none;transition:border-color .2s;background:#fff}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#2563eb}
+.fg textarea{resize:vertical;min-height:72px}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+/* Login */
+.login-pg{min-height:570px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f172a,#1e3a5f 50%,#0f4c81)}
+.lc{background:#fff;border-radius:20px;padding:2.25rem;width:360px;box-shadow:0 25px 60px rgba(0,0,0,.4)}
+.lc-logo{text-align:center;margin-bottom:1.5rem}
+.lc-logo .lc-icon{font-size:2.25rem}
+.lc-logo h2{font-size:1.5rem;font-weight:900;color:var(--navy);margin:.2rem 0}
+.lc-logo p{font-size:.78rem;color:var(--muted)}
+.lc-btn{width:100%;padding:.75rem;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:.2rem}
+.demo-pills{display:flex;gap:.4rem;margin-top:1.1rem;flex-wrap:wrap;justify-content:center}
+.dp{padding:.28rem .6rem;border-radius:999px;font-size:.68rem;font-weight:700;cursor:pointer;border:none}
+.dp:hover{opacity:.8}
+/* Schema */
+.schema{background:#0f172a;padding:1.5rem;min-height:570px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.875rem;align-content:start}
+.ent{background:#1e293b;border:1px solid #334155;border-radius:10px;overflow:hidden}
+.ent-hd{background:#334155;padding:.55rem .9rem;display:flex;align-items:center;gap:.45rem}
+.ent-hd .en{font-size:.82rem;font-weight:700;color:#f1f5f9}
+.ent-hd .et{font-size:.65rem;color:#94a3b8;margin-left:auto}
+.ent-fields{padding:.35rem 0}
+.ef{display:flex;align-items:center;gap:.4rem;padding:.27rem .9rem;font-size:.72rem;color:#cbd5e1;border-bottom:1px solid #1e293b}
+.ef:last-child{border-bottom:none}
+.fk{color:#fbbf24;font-size:.62rem;font-weight:700}
+.ffk{color:#60a5fa;font-size:.62rem;font-weight:700}
+.ft{color:#94a3b8;font-size:.65rem;margin-left:auto;font-family:monospace}
+/* Arch */
+.arch{background:#0f172a;padding:2rem;min-height:570px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.arch-title{color:#64748b;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:1.25rem}
+.arch-row{display:flex;align-items:center;gap:.875rem;flex-wrap:wrap;justify-content:center;margin-bottom:.5rem}
+.ab{padding:.7rem 1.1rem;border-radius:10px;text-align:center;min-width:100px}
+.ab .ai{font-size:1.35rem;display:block;margin-bottom:.25rem}
+.ab .al{font-size:.65rem;opacity:.7;margin-top:.1rem;font-weight:400}
+.ax-ng{background:#1e2a3a;border:2px solid #dc2626;color:#fca5a5}
+.ax-sp{background:#1a2e1a;border:2px solid #16a34a;color:#86efac}
+.ax-db{background:#1a1f2e;border:2px solid #3b82f6;color:#93c5fd}
+.ax-jwt{background:#2a1f3a;border:2px solid #7c3aed;color:#c4b5fd}
+.aa{color:#475569;font-size:1.1rem}
+.arch-div{width:100%;border-top:1px solid #1e293b;margin:.875rem 0}
+.flow{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;justify-content:center}
+.fs{background:#1e293b;border:1px solid #334155;border-radius:7px;padding:.45rem .75rem;font-size:.72rem;color:#cbd5e1;font-weight:500}
+.fa{color:#3b82f6;font-size:.8rem}
+.arch-sub{color:#64748b;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:.875rem 0 .6rem;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-icon">⚕️</div>
+  <h1>Clinic<span>OS</span></h1>
+  <p>Full-Stack Doctor–Patient Management — Interactive Preview</p>
+  <div class="badges">
+    <span class="badge b-java">☕ Java 17</span>
+    <span class="badge b-spring">🍃 Spring Boot 3.0.6</span>
+    <span class="badge b-ng">🅰 Angular 21</span>
+    <span class="badge b-mysql">🗄 MySQL 8</span>
+    <span class="badge b-jwt">🔐 JWT</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="show('login',this)">🔑 Login</button>
+  <button class="tab" onclick="show('admin',this)">👑 Admin</button>
+  <button class="tab" onclick="show('doctor',this)">👨‍⚕️ Doctor</button>
+  <button class="tab" onclick="show('book',this)">📅 Book Appointment</button>
+  <button class="tab" onclick="show('rx',this)">💊 Prescriptions</button>
+  <button class="tab" onclick="show('patient',this)">🧑 Patient</button>
+  <button class="tab" onclick="show('schema',this)">🗄 Data Model</button>
+  <button class="tab" onclick="show('arch',this)">🏗 Architecture</button>
+</div>
+
+<!-- LOGIN -->
+<div id="pane-login" class="pane active">
+  <div class="login-pg">
+    <div class="lc">
+      <div class="lc-logo">
+        <div class="lc-icon">⚕️</div>
+        <h2>ClinicOS</h2>
+        <p>Doctor–Patient Management</p>
+      </div>
+      <div class="fg"><label>Username</label><input id="lu" type="text" value="dr_smith" /></div>
+      <div class="fg"><label>Password</label><input id="lp" type="password" value="password" /></div>
+      <button class="lc-btn" onclick="doLogin()">Sign In →</button>
+      <div class="demo-pills">
+        <button class="dp" style="background:#dbeafe;color:#1d4ed8" onclick="setDemo('admin')">👑 Admin</button>
+        <button class="dp" style="background:#dcfce7;color:#15803d" onclick="setDemo('doctor')">👨‍⚕️ Doctor</button>
+        <button class="dp" style="background:#fef3c7;color:#b45309" onclick="setDemo('patient')">🧑 Patient</button>
+      </div>
+      <p id="lmsg" style="display:none;text-align:center;font-size:.78rem;margin-top:.75rem"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="pane-admin" class="pane">
+  <div class="shell">
+    <div class="sb">
+      <div class="sb-brand">⚕️ ClinicOS</div>
+      <nav>
+        <div class="sb-item active">📊 Dashboard</div>
+        <div class="sb-item">👨‍⚕️ Doctors</div>
+        <div class="sb-item">🧑 Patients</div>
+        <div class="sb-item">📅 Appointments</div>
+        <div class="sb-item">💊 Prescriptions</div>
+        <div class="sb-item">⚙️ Settings</div>
+      </nav>
+      <div class="sb-foot">
+        <div class="ava">A</div>
+        <div><div class="u-name">Admin User</div><div class="u-role" style="color:#f59e0b">Admin</div></div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="ph"><h2>Admin Dashboard</h2><p>System overview and management</p></div>
+      <div class="sg">
+        <div class="stat"><div class="si bl">👨‍⚕️</div><div><div class="sv">3</div><div class="sl">Doctors</div></div></div>
+        <div class="stat"><div class="si gr">🧑</div><div><div class="sv">3</div><div class="sl">Patients</div></div></div>
+        <div class="stat"><div class="si am">📅</div><div><div class="sv">12</div><div class="sl">Appointments</div></div></div>
+        <div class="stat"><div class="si pu">💊</div><div><div class="sv">8</div><div class="sl">Prescriptions</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h3>Registered Doctors</h3><button class="btn btn-blue btn-sm">+ Register Doctor</button></div>
+        <table>
+          <tr><th>Name</th><th>Specialty</th><th>License</th><th>Slots/Day</th><th>Status</th></tr>
+          <tr><td><b>Dr. John Smith</b></td><td>Cardiology</td><td>LIC-001</td><td>20</td><td><span class="pill p-green">Active</span></td></tr>
+          <tr><td><b>Dr. Priya Patel</b></td><td>Pediatrics</td><td>LIC-002</td><td>20</td><td><span class="pill p-green">Active</span></td></tr>
+          <tr><td><b>Dr. Minh Nguyen</b></td><td>Neurology</td><td>LIC-003</td><td>20</td><td><span class="pill p-green">Active</span></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h3>Recent Activity</h3></div>
+        <table>
+          <tr><th>Time</th><th>Event</th><th>Actor</th></tr>
+          <tr><td>09:15 AM</td><td>Prescription created</td><td>Dr. Smith → John Doe</td></tr>
+          <tr><td>09:02 AM</td><td>Appointment booked</td><td>Jane Doe → Dr. Patel</td></tr>
+          <tr><td>08:45 AM</td><td>Patient registered</td><td>bob_wilson</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOCTOR -->
+<div id="pane-doctor" class="pane">
+  <div class="shell">
+    <div class="sb">
+      <div class="sb-brand">⚕️ ClinicOS</div>
+      <nav>
+        <div class="sb-item active">📊 Dashboard</div>
+        <div class="sb-item">📅 My Appointments</div>
+        <div class="sb-item">💊 Prescriptions</div>
+        <div class="sb-item">🧑 Patients</div>
+        <div class="sb-item">🕐 My Slots</div>
+        <div class="sb-item">👤 Profile</div>
+      </nav>
+      <div class="sb-foot">
+        <div class="ava" style="background:#16a34a">JS</div>
+        <div><div class="u-name">Dr. John Smith</div><div class="u-role" style="color:#4ade80">Doctor</div></div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="ph"><h2>Doctor Dashboard</h2><p>Welcome back — Tuesday, 26 Apr 2026</p></div>
+      <div class="sg">
+        <div class="stat"><div class="si bl">📅</div><div><div class="sv">6</div><div class="sl">Today's Appts</div></div></div>
+        <div class="stat"><div class="si gr">✅</div><div><div class="sv">4</div><div class="sl">Completed</div></div></div>
+        <div class="stat"><div class="si am">⏳</div><div><div class="sv">2</div><div class="sl">Upcoming</div></div></div>
+        <div class="stat"><div class="si pu">💊</div><div><div class="sv">3</div><div class="sl">Prescriptions</div></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="card">
+          <div class="card-hd"><h3>Today's Schedule</h3><span class="pill p-blue">6 slots</span></div>
+          <table>
+            <tr><th>Time</th><th>Patient</th><th>Status</th><th>Action</th></tr>
+            <tr><td>09:00</td><td>John Doe</td><td><span class="pill p-green">Done</span></td><td><button class="btn btn-ghost btn-sm">Rx</button></td></tr>
+            <tr><td>09:15</td><td>Jane Doe</td><td><span class="pill p-green">Done</span></td><td><button class="btn btn-ghost btn-sm">Rx</button></td></tr>
+            <tr><td>09:30</td><td>Bob Wilson</td><td><span class="pill p-green">Done</span></td><td><button class="btn btn-ghost btn-sm">Rx</button></td></tr>
+            <tr><td>10:00</td><td>Raj Patel</td><td><span class="pill p-amber">Upcoming</span></td><td><button class="btn btn-ghost btn-sm" disabled>Rx</button></td></tr>
+            <tr><td>10:15</td><td>Sara Lee</td><td><span class="pill p-amber">Upcoming</span></td><td><button class="btn btn-ghost btn-sm" disabled>Rx</button></td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>My Slots — Today</h3><button class="btn btn-ghost btn-sm" onclick="alert('In the full app:\nDoctor can edit their daily slot times.\nPUT /api/doctors/{id}/slots')">✏ Edit Slots</button></div>
+          <p style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem">Green = available · Red = booked</p>
+          <div id="doc-slots" class="slot-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOK APPOINTMENT -->
+<div id="pane-book" class="pane">
+  <div class="shell">
+    <div class="sb">
+      <div class="sb-brand">⚕️ ClinicOS</div>
+      <nav>
+        <div class="sb-item">📊 Dashboard</div>
+        <div class="sb-item active">📅 Book Appointment</div>
+        <div class="sb-item">📋 My Appointments</div>
+        <div class="sb-item">💊 My Prescriptions</div>
+        <div class="sb-item">👤 Profile</div>
+      </nav>
+      <div class="sb-foot">
+        <div class="ava" style="background:#0891b2">JD</div>
+        <div><div class="u-name">John Doe</div><div class="u-role" style="color:#67e8f9">Patient</div></div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="ph"><h2>Book an Appointment</h2><p>Select a doctor, date, and 15-minute slot</p></div>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1rem">
+          <div class="fg" style="margin:0">
+            <label>Doctor</label>
+            <select id="bk-doc" onchange="renderSlots()">
+              <option value="">Choose doctor...</option>
+              <option value="1" selected>Dr. Smith — Cardiology</option>
+              <option value="2">Dr. Patel — Pediatrics</option>
+              <option value="3">Dr. Nguyen — Neurology</option>
+            </select>
+          </div>
+          <div class="fg" style="margin:0">
+            <label>Date</label>
+            <input type="date" id="bk-date" value="2026-04-26" onchange="renderSlots()" />
+          </div>
+          <div class="fg" style="margin:0">
+            <label>Selected Slot</label>
+            <input id="bk-slot" type="text" placeholder="Click a slot →" readonly style="background:#f8fafc;cursor:default" />
+          </div>
+        </div>
+        <div>
+          <p style="font-size:.75rem;font-weight:700;color:#374151;margin-bottom:.35rem">
+            Slots &nbsp;<span class="pill p-green">✓ Free</span>&nbsp;<span class="pill p-red">✗ Taken</span>
+          </p>
+          <div id="slot-container" class="slot-grid"></div>
+        </div>
+        <div id="bk-confirm" style="display:none;margin-top:.875rem;padding:.875rem;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0">
+          <p style="font-size:.83rem;color:#166534;font-weight:600;margin-bottom:.5rem">✅ Slot selected — add notes and confirm.</p>
+          <div class="fg" style="margin-bottom:.5rem"><label>Notes (optional)</label><input type="text" placeholder="e.g. chest pain for 2 days" /></div>
+          <button class="btn btn-green" onclick="confirmBook()">Confirm Booking</button>
+        </div>
+        <p id="bk-done" style="display:none;color:#16a34a;font-weight:700;font-size:.83rem;margin-top:.75rem"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRESCRIPTIONS (DOCTOR VIEW) -->
+<div id="pane-rx" class="pane">
+  <div class="shell">
+    <div class="sb">
+      <div class="sb-brand">⚕️ ClinicOS</div>
+      <nav>
+        <div class="sb-item">📊 Dashboard</div>
+        <div class="sb-item">📅 My Appointments</div>
+        <div class="sb-item active">💊 Prescriptions</div>
+        <div class="sb-item">🧑 Patients</div>
+      </nav>
+      <div class="sb-foot">
+        <div class="ava" style="background:#16a34a">JS</div>
+        <div><div class="u-name">Dr. John Smith</div><div class="u-role" style="color:#4ade80">Doctor</div></div>
+      </div>
+    </div>
+    <div class="main">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <div class="ph" style="margin:0"><h2>Prescriptions</h2><p>All clinic Rxs — edit only your own</p></div>
+        <button class="btn btn-blue" onclick="toggleRxForm()">+ New Rx</button>
+      </div>
+
+      <div id="rx-form" style="display:none" class="card">
+        <div class="card-hd"><h3>New Prescription</h3><button class="btn btn-ghost btn-sm" onclick="toggleRxForm()">✕</button></div>
+        <div class="fg-row">
+          <div class="fg"><label>Patient</label><select><option>John Doe (P-001)</option><option>Jane Doe (P-002)</option><option>Bob Wilson (P-003)</option></select></div>
+          <div class="fg"><label>Disease / Diagnosis</label><input type="text" placeholder="e.g. Hypertension" /></div>
+        </div>
+        <div class="fg"><label>Medications</label><textarea placeholder="Amlodipine 5mg – 1 tab daily&#10;Aspirin 75mg – 1 tab daily"></textarea></div>
+        <div class="fg-row">
+          <div class="fg"><label>Dosage Instructions</label><input type="text" placeholder="After meals, twice daily" /></div>
+          <div class="fg"><label>Follow-up Date</label><input type="date" value="2026-05-26" /></div>
+        </div>
+        <div class="fg"><label>Notes</label><textarea placeholder="Monitor BP weekly. Reduce salt intake." style="min-height:55px"></textarea></div>
+        <button class="btn btn-green" onclick="saveRx()">💊 Save Prescription</button>
+      </div>
+
+      <div id="rx-list">
+        <div class="rx">
+          <div class="rx-top">
+            <div><div class="rx-disease">Hypertension</div><div class="rx-meta">👨‍⚕️ Dr. John Smith &nbsp;•&nbsp; 🧑 John Doe &nbsp;•&nbsp; 📅 25 Apr 2026 09:05</div></div>
+            <div style="display:flex;gap:.4rem;align-items:center"><span class="pill p-blue">Your Rx</span><button class="btn btn-ghost btn-sm">✏ Edit</button></div>
+          </div>
+          <div class="rx-meds">💊 Amlodipine 5mg – 1 tab daily &nbsp;|&nbsp; Aspirin 75mg – 1 tab daily</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem">📝 Monitor BP weekly. Follow-up: 26 May 2026</div>
+        </div>
+        <div class="rx">
+          <div class="rx-top">
+            <div><div class="rx-disease">Childhood Asthma</div><div class="rx-meta">👨‍⚕️ Dr. Priya Patel &nbsp;•&nbsp; 🧑 Jane Doe &nbsp;•&nbsp; 📅 24 Apr 2026 14:20</div></div>
+            <div style="display:flex;gap:.4rem;align-items:center"><span class="pill p-gray">Read-only</span><button class="btn btn-ghost btn-sm" disabled style="opacity:.4">🔒 Edit</button></div>
+          </div>
+          <div class="rx-meds">💊 Salbutamol Inhaler – 2 puffs as needed &nbsp;|&nbsp; Montelukast 5mg – nightly</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem">📝 Avoid allergens. Review in 4 weeks.</div>
+        </div>
+        <div class="rx">
+          <div class="rx-top">
+            <div><div class="rx-disease">Migraine</div><div class="rx-meta">👨‍⚕️ Dr. Minh Nguyen &nbsp;•&nbsp; 🧑 Bob Wilson &nbsp;•&nbsp; 📅 23 Apr 2026 11:45</div></div>
+            <div style="display:flex;gap:.4rem;align-items:center"><span class="pill p-gray">Read-only</span><button class="btn btn-ghost btn-sm" disabled style="opacity:.4">🔒 Edit</button></div>
+          </div>
+          <div class="rx-meds">💊 Sumatriptan 50mg – at onset &nbsp;|&nbsp; Topiramate 25mg – prophylaxis</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem">📝 Avoid triggers. Keep headache diary.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PATIENT -->
+<div id="pane-patient" class="pane">
+  <div class="shell">
+    <div class="sb">
+      <div class="sb-brand">⚕️ ClinicOS</div>
+      <nav>
+        <div class="sb-item active">📊 Dashboard</div>
+        <div class="sb-item">📅 Book Appointment</div>
+        <div class="sb-item">📋 My Appointments</div>
+        <div class="sb-item">💊 My Prescriptions</div>
+        <div class="sb-item">👤 Profile</div>
+      </nav>
+      <div class="sb-foot">
+        <div class="ava" style="background:#0891b2">JD</div>
+        <div><div class="u-name">John Doe</div><div class="u-role" style="color:#67e8f9">Patient</div></div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="ph"><h2>My Health Portal</h2><p>Your appointments and prescriptions</p></div>
+      <div class="sg">
+        <div class="stat"><div class="si bl">📅</div><div><div class="sv">3</div><div class="sl">Appointments</div></div></div>
+        <div class="stat"><div class="si gr">✅</div><div><div class="sv">2</div><div class="sl">Completed</div></div></div>
+        <div class="stat"><div class="si am">⏳</div><div><div class="sv">1</div><div class="sl">Upcoming</div></div></div>
+        <div class="stat"><div class="si pu">💊</div><div><div class="sv">2</div><div class="sl">Prescriptions</div></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="card">
+          <div class="card-hd"><h3>My Appointments</h3><button class="btn btn-blue btn-sm">+ Book New</button></div>
+          <table>
+            <tr><th>Doctor</th><th>Date & Time</th><th>Status</th></tr>
+            <tr><td><b>Dr. Smith</b><br><small style="color:var(--muted)">Cardiology</small></td><td>25 Apr · 09:00</td><td><span class="pill p-green">Done</span></td></tr>
+            <tr><td><b>Dr. Patel</b><br><small style="color:var(--muted)">Pediatrics</small></td><td>20 Apr · 14:15</td><td><span class="pill p-green">Done</span></td></tr>
+            <tr><td><b>Dr. Smith</b><br><small style="color:var(--muted)">Cardiology</small></td><td>26 Apr · 10:30</td><td><span class="pill p-amber">Upcoming</span></td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>My Prescriptions</h3></div>
+          <div class="rx" style="margin-bottom:.5rem">
+            <div class="rx-disease" style="font-size:.87rem">Hypertension</div>
+            <div class="rx-meta">Dr. Smith · 25 Apr 2026</div>
+            <div class="rx-meds">Amlodipine 5mg · Aspirin 75mg</div>
+          </div>
+          <div class="rx">
+            <div class="rx-disease" style="font-size:.87rem">Vitamin D Deficiency</div>
+            <div class="rx-meta">Dr. Patel · 20 Apr 2026</div>
+            <div class="rx-meds">Vitamin D3 60,000 IU — weekly</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DATA MODEL -->
+<div id="pane-schema" class="pane">
+  <div class="schema">
+    <div class="ent">
+      <div class="ent-hd"><span>👤</span><span class="en">users</span><span class="et">Core Auth</span></div>
+      <div class="ent-fields">
+        <div class="ef"><span class="fk">PK</span> id <span class="ft">BIGINT AI</span></div>
+        <div class="ef">username <span class="ft">VARCHAR(100) UNIQUE</span></div>
+        <div class="ef">password <span class="ft">VARCHAR(255)</span></div>
+        <div class="ef">email <span class="ft">VARCHAR(150) UNIQUE</span></div>
+        <div class="ef">role <span class="ft">ENUM(ADMIN,DOCTOR,PATIENT)</span></div>
+        <div class="ef">enabled <span class="ft">BOOLEAN DEFAULT TRUE</span></div>
+        <div class="ef">created_at <span class="ft">DATETIME</span></div>
+      </div>
+    </div>
+    <div class="ent">
+      <div class="ent-hd"><span>👨‍⚕️</span><span class="en">doctors</span><span class="et">Doctor Profile</span></div>
+      <div class="ent-fields">
+        <div class="ef"><span class="fk">PK</span> id <span class="ft">BIGINT AI</span></div>
+        <div class="ef"><span class="ffk">FK</span> user_id → users <span class="ft">UNIQUE</span></div>
+        <div class="ef">full_name <span class="ft">VARCHAR(150)</span></div>
+        <div class="ef">specialty <span class="ft">VARCHAR(100)</span></div>
+        <div class="ef">license_number <span class="ft">VARCHAR(50)</span></div>
+        <div class="ef">available_slots <span class="ft">TEXT (CSV)</span></div>
+        <div class="ef">slots_per_day <span class="ft">INT DEFAULT 20</span></div>
+      </div>
+    </div>
+    <div class="ent">
+      <div class="ent-hd"><span>🧑</span><span class="en">patients</span><span class="et">Patient Profile</span></div>
+      <div class="ent-fields">
+        <div class="ef"><span class="fk">PK</span> id <span class="ft">BIGINT AI</span></div>
+        <div class="ef"><span class="ffk">FK</span> user_id → users <span class="ft">UNIQUE</span></div>
+        <div class="ef">full_name <span class="ft">VARCHAR(150)</span></div>
+        <div class="ef">date_of_birth <span class="ft">DATE</span></div>
+        <div class="ef">gender <span class="ft">VARCHAR(10)</span></div>
+        <div class="ef">phone <span class="ft">VARCHAR(20)</span></div>
+        <div class="ef">blood_group <span class="ft">VARCHAR(5)</span></div>
+        <div class="ef">emergency_contact <span class="ft">VARCHAR(20)</span></div>
+      </div>
+    </div>
+    <div class="ent">
+      <div class="ent-hd"><span>📅</span><span class="en">appointments</span><span class="et">Booking</span></div>
+      <div class="ent-fields">
+        <div class="ef"><span class="fk">PK</span> id <span class="ft">BIGINT AI</span></div>
+        <div class="ef"><span class="ffk">FK</span> doctor_id → doctors</div>
+        <div class="ef"><span class="ffk">FK</span> patient_id → patients</div>
+        <div class="ef">appointment_date <span class="ft">DATE</span></div>
+        <div class="ef">time_slot <span class="ft">TIME</span></div>
+        <div class="ef">status <span class="ft">ENUM(SCHEDULED…)</span></div>
+        <div class="ef" style="color:#f59e0b;font-size:.65rem">🔑 UNIQUE(doctor_id, date, slot)</div>
+      </div>
+    </div>
+    <div class="ent">
+      <div class="ent-hd"><span>💊</span><span class="en">prescriptions</span><span class="et">Medical Record</span></div>
+      <div class="ent-fields">
+        <div class="ef"><span class="fk">PK</span> id <span class="ft">BIGINT AI</span></div>
+        <div class="ef"><span class="ffk">FK</span> patient_id → patients</div>
+        <div class="ef"><span class="ffk">FK</span> doctor_id → doctors</div>
+        <div class="ef"><span class="ffk">FK</span> appointment_id → appointments</div>
+        <div class="ef">disease <span class="ft">VARCHAR(200)</span></div>
+        <div class="ef">medications <span class="ft">TEXT</span></div>
+        <div class="ef">dosage_instructions <span class="ft">TEXT</span></div>
+        <div class="ef">follow_up_date <span class="ft">DATETIME</span></div>
+        <div class="ef">timestamp <span class="ft">DATETIME NOT NULL</span></div>
+        <div class="ef" style="color:#c4b5fd"><span class="ffk">FK</span> editable_by_doctor_id <span class="ft">→ doctors</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ARCHITECTURE -->
+<div id="pane-arch" class="pane">
+  <div class="arch">
+    <div class="arch-title">Full Stack Architecture</div>
+    <div class="arch-row">
+      <div class="ab ax-ng"><span class="ai">🅰</span>Angular 21<div class="al">Standalone Components<br>Signals · Lazy Routes</div></div>
+      <span class="aa">→</span>
+      <div class="ab ax-jwt"><span class="ai">🔐</span>JWT Token<div class="al">Bearer Header<br>HTTP Interceptor</div></div>
+      <span class="aa">→</span>
+      <div class="ab ax-sp"><span class="ai">🍃</span>Spring Boot 3.0.6<div class="al">REST Controllers<br>@PreAuthorize RBAC</div></div>
+      <span class="aa">→</span>
+      <div class="ab ax-db"><span class="ai">🗄</span>MySQL 8<div class="al">JPA / Hibernate<br>Auto-schema update</div></div>
+    </div>
+    <div class="arch-div"></div>
+    <div class="arch-sub">Patient Books Appointment — Request Flow</div>
+    <div class="flow">
+      <div class="fs">🧑 Patient clicks Book</div><span class="fa">→</span>
+      <div class="fs">AppointmentService.bookAppointment()</div><span class="fa">→</span>
+      <div class="fs">POST /api/appointments/book</div><span class="fa">→</span>
+      <div class="fs">JwtAuthFilter validates token</div><span class="fa">→</span>
+      <div class="fs">@PreAuthorize PATIENT role</div><span class="fa">→</span>
+      <div class="fs">Check slot availability DB</div><span class="fa">→</span>
+      <div class="fs">Save · Return 200 OK</div>
+    </div>
+    <div class="arch-div"></div>
+    <div class="arch-sub">Security Filter Chain</div>
+    <div class="flow">
+      <div class="fs" style="border-color:#ef4444;color:#fca5a5">CORS Filter</div><span class="fa">→</span>
+      <div class="fs" style="border-color:#f59e0b;color:#fcd34d">JwtAuthenticationFilter</div><span class="fa">→</span>
+      <div class="fs" style="border-color:#3b82f6;color:#93c5fd">SecurityFilterChain (permitAll / hasRole)</div><span class="fa">→</span>
+      <div class="fs" style="border-color:#7c3aed;color:#c4b5fd">@PreAuthorize method-level</div><span class="fa">→</span>
+      <div class="fs" style="border-color:#16a34a;color:#86efac">Business Logic</div>
+    </div>
+    <div class="arch-div"></div>
+    <div class="arch-sub">Angular Standalone Components (Lazy-Loaded)</div>
+    <div class="flow">
+      <div class="fs">AuthGuard + RoleGuard</div><span class="fa">→</span>
+      <div class="fs">LoginComponent</div>
+      <div class="fs">RegisterComponent</div>
+      <div class="fs">AdminDashboard</div>
+      <div class="fs">DoctorDashboard</div>
+      <div class="fs">PatientDashboard</div>
+      <div class="fs">AppointmentScheduler</div>
+      <div class="fs">PrescriptionEditor</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Tab switching ──────────────────────────────────────────────
+function show(id, btn) {
+  document.querySelectorAll('.pane').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('pane-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'doctor') buildDocSlots();
+  if (id === 'book')   renderSlots();
+}
+
+// ── Login ──────────────────────────────────────────────────────
+var demoUsers = {
+  admin:   { u:'admin',    role:'ADMIN' },
+  doctor:  { u:'dr_smith', role:'DOCTOR' },
+  patient: { u:'john_doe', role:'PATIENT' }
+};
+
+function setDemo(type) {
+  document.getElementById('lu').value = demoUsers[type].u;
+  document.getElementById('lp').value = 'password';
+}
+
+function doLogin() {
+  var u = document.getElementById('lu').value;
+  var msg = document.getElementById('lmsg');
+  var map = { admin:'ADMIN', dr_smith:'DOCTOR', dr_patel:'DOCTOR', dr_nguyen:'DOCTOR', john_doe:'PATIENT', jane_doe:'PATIENT', bob_wilson:'PATIENT' };
+  var role = map[u];
+  msg.style.display = 'block';
+  if (!role) {
+    msg.style.color = '#dc2626';
+    msg.textContent = 'Invalid credentials — try the demo buttons above.';
+    return;
+  }
+  msg.style.color = '#16a34a';
+  msg.textContent = 'Logged in as ' + u + ' (' + role + ') — JWT token issued.';
+  var dest = { ADMIN:'admin', DOCTOR:'doctor', PATIENT:'patient' };
+  var tabTarget = dest[role];
+  setTimeout(function() {
+    var tabs = document.querySelectorAll('.tab');
+    tabs.forEach(function(t) {
+      if (t.textContent.toLowerCase().indexOf(tabTarget) !== -1) t.click();
+    });
+  }, 800);
+}
+
+// ── Doctor slots ───────────────────────────────────────────────
+var booked = ['09:00','09:15','09:30','09:45'];
+var allSlots = ['09:00','09:15','09:30','09:45','10:00','10:15','10:30','10:45','11:00','11:15','14:00','14:15','14:30','14:45','15:00','15:15','15:30','15:45','16:00','16:15'];
+
+function buildDocSlots() {
+  var el = document.getElementById('doc-slots');
+  if (!el) return;
+  var html = '';
+  for (var i = 0; i < allSlots.length; i++) {
+    var s = allSlots[i];
+    var cls = booked.indexOf(s) !== -1 ? 'taken' : 'free';
+    html += '<div class="slot ' + cls + '" onclick="toggleDocSlot(this)">' + s + '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function toggleDocSlot(el) {
+  if (el.classList.contains('taken')) return;
+  el.classList.toggle('sel');
+}
+
+// ── Booking slots ──────────────────────────────────────────────
+var slotData = {
+  '1': { all: ['09:00','09:15','09:30','09:45','10:00','10:15','10:30','10:45','11:00','11:15','14:00','14:15','14:30','14:45'], taken: ['09:00','09:15','09:30','09:45'] },
+  '2': { all: ['09:30','09:45','10:00','10:15','10:30','11:00','14:00','14:30','15:00','15:30'], taken: ['09:30','10:00'] },
+  '3': { all: ['09:00','09:30','10:00','10:30','11:00','14:00','14:30','15:00','15:30','16:00'], taken: ['09:00','14:00'] }
+};
+var selectedSlot = null;
+
+function renderSlots() {
+  var doc = document.getElementById('bk-doc').value;
+  var container = document.getElementById('slot-container');
+  var confirm = document.getElementById('bk-confirm');
+  var done = document.getElementById('bk-done');
+  if (done) done.style.display = 'none';
+  if (confirm) confirm.style.display = 'none';
+  selectedSlot = null;
+  document.getElementById('bk-slot').value = '';
+
+  if (!doc) {
+    container.innerHTML = '<p style="color:var(--muted);font-size:.8rem">Select a doctor to see slots.</p>';
+    return;
+  }
+  var data = slotData[doc];
+  var html = '';
+  for (var i = 0; i < data.all.length; i++) {
+    var s = data.all[i];
+    var isTaken = data.taken.indexOf(s) !== -1;
+    var cls = isTaken ? 'taken' : 'free';
+    html += '<div class="slot ' + cls + '" data-slot="' + s + '" data-taken="' + isTaken + '" onclick="selectSlot(this)">' + s + '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function selectSlot(el) {
+  if (el.getAttribute('data-taken') === 'true') return;
+  var slots = document.querySelectorAll('#slot-container .slot');
+  for (var i = 0; i < slots.length; i++) {
+    slots[i].classList.remove('sel');
+  }
+  el.classList.add('sel');
+  selectedSlot = el.getAttribute('data-slot');
+  document.getElementById('bk-slot').value = selectedSlot;
+  document.getElementById('bk-confirm').style.display = 'block';
+}
+
+function confirmBook() {
+  document.getElementById('bk-confirm').style.display = 'none';
+  var done = document.getElementById('bk-done');
+  done.style.display = 'block';
+  done.textContent = 'Appointment booked — Dr. Smith @ ' + selectedSlot + ' on Apr 26, 2026';
+  var selEl = document.querySelector('#slot-container .slot.sel');
+  if (selEl) { selEl.classList.remove('sel', 'free'); selEl.classList.add('taken'); }
+}
+
+// ── Prescriptions ──────────────────────────────────────────────
+function toggleRxForm() {
+  var f = document.getElementById('rx-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveRx() {
+  toggleRxForm();
+  var list = document.getElementById('rx-list');
+  var div = document.createElement('div');
+  div.className = 'rx';
+  div.style.borderLeft = '3px solid #3b82f6';
+  div.innerHTML = '<div class="rx-top"><div><div class="rx-disease">New Prescription</div><div class="rx-meta">Dr. John Smith &nbsp;• &nbsp;Selected Patient &nbsp;• &nbsp;Just now</div></div><div style="display:flex;gap:.4rem;align-items:center"><span class="pill p-blue">Your Rx</span><button class="btn btn-ghost btn-sm">Edit</button></div></div><div class="rx-meds">Medications as entered</div>';
+  list.insertBefore(div, list.firstChild);
+}
+
+// ── Boot ──────────────────────────────────────────────────────
+buildDocSlots();
+renderSlots();
+</script>
+</body>
+</html>
