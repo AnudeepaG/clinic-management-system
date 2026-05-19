@@ -14,7 +14,7 @@ export interface NavLink { label: string; path: string; icon: string; }
     <nav class="navbar">
       <div class="nav-brand">
         <span class="logo-icon">⚕</span>
-        <span class="logo-text">ClinicOS</span>
+        <span class="logo-text">ClinicHub</span>
         <span class="role-badge" [class]="roleClass()">{{ auth.currentUser()?.role }}</span>
       </div>
       <div class="nav-links">

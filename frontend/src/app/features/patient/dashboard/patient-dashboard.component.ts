@@ -17,7 +17,7 @@ import { PatientService } from '../../../core/services/patient.service';
       <aside class="sidebar">
         <div class="brand">
           <span class="brand-icon">⚕</span>
-          <span>MediCore</span>
+          <span>ClinicHub</span>
         </div>
         <nav class="nav">
           <a routerLink="/patient/dashboard" class="nav-item active">🏠 Dashboard</a>

@@ -14,7 +14,7 @@ import { AuthService } from '../../../core/services/auth.service';
       <div class="login-card">
         <div class="logo">
           <span class="logo-icon">⚕</span>
-          <h1>ClinicOS</h1>
+          <h1>ClinicHub</h1>
           <p>Doctor-Patient Management</p>
         </div>
 
@@ -43,12 +43,6 @@ import { AuthService } from '../../../core/services/auth.service';
           New patient? <a routerLink="/register">Register here</a>
         </p>
 
-        <div class="demo-creds">
-          <p><strong>Demo Credentials</strong></p>
-          <div class="cred-row"><span class="badge admin">Admin</span> admin / password</div>
-          <div class="cred-row"><span class="badge doctor">Doctor</span> dr_smith / password</div>
-          <div class="cred-row"><span class="badge patient">Patient</span> john_doe / password</div>
-        </div>
       </div>
     </div>
   `,

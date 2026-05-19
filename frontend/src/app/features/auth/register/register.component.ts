@@ -14,7 +14,7 @@ import { AuthService } from '../../../core/services/auth.service';
       <div class="register-card">
         <div class="logo">
           <span class="logo-icon">⚕</span>
-          <h1>ClinicOS</h1>
+          <h1>ClinicHub</h1>
           <p>Patient Registration</p>
         </div>
 
