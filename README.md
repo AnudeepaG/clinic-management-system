@@ -1,6 +1,15 @@
 # MediCore — Doctor-Patient Management System
 ## Java 17 + Spring Boot 3.0.6 + Angular 21
 
+##SCREENSHOTS
+
+<img width="1906" height="868" alt="image" src="https://github.com/user-attachments/assets/b5048dd2-df87-4f89-b372-c4c410ec4ed5" />
+<img width="1908" height="888" alt="image" src="https://github.com/user-attachments/assets/dbb651dd-baee-44cf-97b4-79712aed5954" />
+
+
+
+
+
 ---
 
 ## 📁 Project Structure
